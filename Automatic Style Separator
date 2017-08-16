@@ -16,14 +16,11 @@ If Selection.Style = "Heading 2" Then
     Loop      
 
 ElseIf Selection.Style <> "Heading 2" Then
-    Do While Selection.Style <> "Heading 2"
+    
+    Do While Selection.Style <> "Heading 2"
         ActiveWindow.Selection.GoTo wdGoToHeading, wdGoToNext
-    Loop        Do While Selection.Style = "Heading 2"
-        If Selection.Style = "Heading 2" Then            
-        Selection.MoveUntil Cset:=".", Count:=100            
-        Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"            
-        ActiveWindow.Selection.GoTo wdGoToHeading, wdGoToNext                
-        End If            Loop
+    Loop        
+   
 End If
 
   End Sub
