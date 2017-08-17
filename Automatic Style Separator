@@ -1,26 +1,21 @@
-Sub Macro4()
+Sub AutomaticStyleSeparator()
 
-Macro4 Macro
+Dim rng As Range
+   Dim rng1 As Range
+   Set rng = ActiveDocument.Range   
+      With rng.Find       
+         .Style = "Heading 2"       
+          Do While .Execute()           
+          Set rng1 = rng.Duplicate           
+          With rng1.Find              
+             .Text = "."               
+             If .Execute() Then                 
+               rng1.Collapse wdCollapseStart               
+                  rng1.Select              
+                  Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"           
+          End If        
+       End With   
+     Loop 
+   End With
+ End Sub
 
-If Selection.Style = "Heading 2" Then
-    Do While Selection.Style = "Heading 2"
-        If Selection.Style = "Heading 2" Then            
-            Selection.MoveUntil Cset:=".", Count:=100            
-            Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"            
-            ActiveWindow.Selection.GoTo wdGoToHeading, wdGoToNext                
-        End If            
-    Loop        
-    
-    Do While Selection.Style <> "Heading 2"
-        ActiveWindow.Selection.GoTo wdGoToHeading, wdGoToNext
-    Loop      
-
-ElseIf Selection.Style <> "Heading 2" Then
-    
-    Do While Selection.Style <> "Heading 2"
-        ActiveWindow.Selection.GoTo wdGoToHeading, wdGoToNext
-    Loop        
-   
-End If
-
-  End Sub
