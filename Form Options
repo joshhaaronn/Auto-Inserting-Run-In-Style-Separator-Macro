@@ -1,0 +1,23 @@
+Sub AutomaticStyleSeparatorOptions()
+
+If StyleSeparatorForm1.Heading1.Value = True Then
+Call RunHeading1AutoStyleSep
+End If
+
+If StyleSeparatorForm1.Heading2.Value = True Then
+Call RunHeading2AutoStyleSep
+End If
+
+If StyleSeparatorForm1.Heading3.Value = True Then
+Call RunHeading3AutoStyleSep
+End If
+
+If StyleSeparatorForm1.Heading4.Value = True Then
+Call RunHeading4AutoStyleSep
+End If
+
+If StyleSeparatorForm1.Heading5.Value = True Then
+Call RunHeading5AutoStyleSep
+End If
+
+End Sub
