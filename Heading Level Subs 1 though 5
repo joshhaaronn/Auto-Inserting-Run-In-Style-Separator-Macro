@@ -40,8 +40,24 @@ Dim rng As Range  
 End Sub
 
 Sub RunHeading3AutoStyleSep()
-Dim rng As Range   Dim rng1 As Range
-   Set rng = ActiveDocument.Range   With rng.Find       .Style = "Heading 3"       Do While .Execute()           Set rng1 = rng.Duplicate           With rng1.Find              .Text = "."               If .Execute() Then                 rng1.Collapse wdCollapseStart               rng1.Select              Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"           End If        End With    Loop End With 
+Dim rng As Range   
+    Dim rng1 As Range
+    
+    Set rng = ActiveDocument.Range
+    With rng.Find
+        .Style = "Heading 3"
+        Do While .Execute()           
+            Set rng1 = rng.Duplicate
+            With rng1.Find
+                .Text = "."
+                If .Execute() Then
+                    rng1.Collapse wdCollapseStart
+                rng1.Select
+                Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"
+            End If
+        End With
+    Loop
+End With 
 End Sub
 Sub RunHeading4AutoStyleSep()
 Dim rng As Range   Dim rng1 As Range
