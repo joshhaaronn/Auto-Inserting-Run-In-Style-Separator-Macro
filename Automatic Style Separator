@@ -4,7 +4,7 @@ Dim rng As Range
    Dim rng1 As Range
    Set rng = ActiveDocument.Range   
       With rng.Find       
-         .Style = "Heading 2"       
+         .Style = "[Specified Heading Level]"       
           Do While .Execute()           
           Set rng1 = rng.Duplicate           
           With rng1.Find              
