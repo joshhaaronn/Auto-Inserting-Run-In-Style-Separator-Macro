@@ -1,3 +1,0 @@
-Sub AutomaticStyleSepForm()
-    StyleSeparatorForm1.Show
-End Sub
