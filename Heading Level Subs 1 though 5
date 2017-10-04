@@ -1,3 +1,28 @@
+Sub AutomaticStyleSepForm()
+    StyleSeparatorForm1.Show
+End Sub
+
+Sub AutomaticStyleSeparatorOptions()
+If StyleSeparatorForm1.Heading1.Value = True Then    
+    RunHeadingAutoStyleSep "Heading 1"
+End If
+
+If StyleSeparatorForm1.Heading2.Value = True Then
+    RunHeadingAutoStyleSep "Heading 2"
+End If
+
+If StyleSeparatorForm1.Heading3.Value = True Then
+    RunHeadingAutoStyleSep "Heading 3"
+End If
+
+If StyleSeparatorForm1.Heading4.Value = True Then
+    RunHeadingAutoStyleSep "Heading 4"
+End If
+
+If StyleSeparatorForm1.Heading5.Value = True Then
+    RunHeadingAutoStyleSep "Heading 5"
+End If
+
 Sub RunHeadingAutoStyleSep(strFind As String)
 Dim rng As Range
     Dim rng1 As Range
@@ -18,3 +43,5 @@ Dim rng As Range
     Loop 
 End With
 End Sub
+
+
