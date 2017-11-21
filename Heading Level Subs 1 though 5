@@ -31,26 +31,54 @@ End Sub
 
 Sub RunHeadingAutoStyleSep(strFind As String)
 'This Sub accepts the String, which specifies the Heading level(s), as an arguement.
+'It then automatically inserts the style separators to the specific headings based on the arguements passed.
 
 Dim rng As Range
 Dim rng1 As Range
-    
-    Set rng = ActiveDocument.Range   
-    With rng.Find       
+Dim rngAll As Range
+Dim rngParagraph As Range
+
+    Set rngAll = ActiveDocument.Content
+    Set rng = rngAll.Duplicate
+    With rng.Find
+        .ClearFormatting
+        .Forward = True
         .Style = strFind
         Do While .Execute()
-            Set rng1 = rng.Duplicate
-            With rng1.Find
-                .Text = "."
-                If .Execute() Then
-                    rng1.Collapse wdCollapseStart
-                    rng1.Select
-                    Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"
-                    Selection.Move Unit:=wdCharacter, Count:=1
-                End If
-            End With
-        Loop 
+            rng.Select
+           If Not rng.Paragraphs(1).IsStyleSeparator Then
+                rng.MoveStartUntil Cset=.
+                rng.Collapse
+                rng.Select
+                insertStyleSep
+'                Application.Run MacroName=LWmacros.basHNum.InsertStyleSeparator
+                InsertionCount = InsertionCount + 1
+                Selection.Move Unit=wdCharacter, count=1
+            Else
+                rng.Collapse wdCollapseEnd
+            End If
+        Loop
     End With
 End Sub
 
+Sub insertStyleSep()
+Dim rgSel As Range
+Dim rgNew As Range
 
+    Set rgSel = Selection.Range
+    
+    rgSel.InsertParagraph
+    Set rgNew = rgSel.Duplicate
+    
+    rgNew.Move wdParagraph, 1
+    rgNew.Select
+    
+    rgNew.Style = ActiveDocument.Styles(BodyText 1)
+    
+    rgSel.Select
+    Selection.InsertStyleSeparator
+    
+    rgSel.Collapse wdCollapseEnd
+    rgSel.Delete
+            
+End Sub
