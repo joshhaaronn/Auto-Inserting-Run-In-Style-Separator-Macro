@@ -1,3 +1,7 @@
+Option Explicit
+
+Public InsertionCount As Long
+
 Sub AutomaticStyleSepForm()
 'This Sub simply allows the Form to be called from the Macros Menu. 
     StyleSeparatorForm1.Show
