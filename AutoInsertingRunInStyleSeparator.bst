@@ -55,7 +55,6 @@ Dim rngParagraph As Range
                 rng.Collapse
                 rng.Select
                 insertStyleSep
-'                Application.Run MacroName=LWmacros.basHNum.InsertStyleSeparator
                 InsertionCount = InsertionCount + 1
                 Selection.Move Unit=wdCharacter, count=1
             Else
