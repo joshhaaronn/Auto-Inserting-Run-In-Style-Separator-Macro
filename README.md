@@ -1,4 +1,4 @@
-# Word-Processor-Macros
+# AutoStyleSeparator
 A breakdown of all the components thus far:
 
 1. "StyleSeparatorForm.frm/.frx" is a checkbox form that allows the user to specify which heading styles the macro will run on.
