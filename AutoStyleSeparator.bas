@@ -1,47 +1,41 @@
+Attribute VB_Name = "AutoStyleSeparator"
 Option Explicit
 
 Public InsertionCount As Long
 
+Public strApplyStyle As String
+
 Sub AutomaticStyleSepForm()
-'This Sub simply allows the Form to be called from the Macros Menu. 
+'This Sub allows the Form to be called from the Macros Menu.
     StyleSeparatorForm1.Show
+    
 End Sub
 
 Sub AutomaticStyleSeparatorOptions()
+Dim intI As Integer
+Dim arValues() As String
 
-'This sub passes an variable, As String, to RunHeadingAutoStyleSep based on the options selected in the StyleSeparatorForm1.
+    arValues = fnShowSelections
+    
+    For intI = LBound(arValues) To UBound(arValues)
+        RunHeadingAutoStyleSep arValues(intI)
+    Next intI
 
-    If StyleSeparatorForm1.Heading1.Value = True Then    
-        RunHeadingAutoStyleSep "Heading 1"
-    End If
+ 
 
-    If StyleSeparatorForm1.Heading2.Value = True Then
-        RunHeadingAutoStyleSep "Heading 2"
-    End If
-
-    If StyleSeparatorForm1.Heading3.Value = True Then
-        RunHeadingAutoStyleSep "Heading 3"
-    End If
-
-    If StyleSeparatorForm1.Heading4.Value = True Then
-        RunHeadingAutoStyleSep "Heading 4"
-    End If
-
-    If StyleSeparatorForm1.Heading5.Value = True Then
-        RunHeadingAutoStyleSep "Heading 5"
-    End If
-
+    
 End Sub
 
+
 Sub RunHeadingAutoStyleSep(strFind As String)
-'This Sub accepts the String, which specifies the Heading level(s), as an arguement.
-'It then automatically inserts the style separators to the specific headings based on the arguements passed.
+'inserts the style separators to the specific headings based on the string passed.
 
 Dim rng As Range
 Dim rng1 As Range
 Dim rngAll As Range
 Dim rngParagraph As Range
 
+'    Set rng = ActiveDocument.Range
     Set rngAll = ActiveDocument.Content
     Set rng = rngAll.Duplicate
     With rng.Find
@@ -51,12 +45,13 @@ Dim rngParagraph As Range
         Do While .Execute()
             rng.Select
            If Not rng.Paragraphs(1).IsStyleSeparator Then
-                rng.MoveStartUntil Cset=.
-                rng.Collapse
+                rng.MoveStartUntil Cset:="."
+                rng.Collapse Direction:=wdCollapseStart
                 rng.Select
                 insertStyleSep
+'                Application.Run MacroName:="LWmacros.basHNum.InsertStyleSeparator"
                 InsertionCount = InsertionCount + 1
-                Selection.Move Unit=wdCharacter, count=1
+                Selection.Move Unit:=wdCharacter, count:=1
             Else
                 rng.Collapse wdCollapseEnd
             End If
@@ -76,7 +71,12 @@ Dim rgNew As Range
     rgNew.Move wdParagraph, 1
     rgNew.Select
     
-    rgNew.Style = ActiveDocument.Styles(BodyText 1)
+    If StyleExists = True Then
+        rgNew.Style = ActiveDocument.Styles("BodyText 1")
+    Else
+        rgNew.Style = ActiveDocument.Styles(wdStyleBodyText)
+    End If
+    
     
     rgSel.Select
     Selection.InsertStyleSeparator
@@ -85,3 +85,154 @@ Dim rgNew As Range
     rgSel.Delete
             
 End Sub
+
+
+Function StyleExists() As Boolean
+    Dim t
+    On Error Resume Next
+    StyleExists = True
+    Set t = ActiveDocument.Styles("BodyText 1")
+    If Err.Number <> 0 Then StyleExists = False
+    Err.Clear
+End Function
+
+
+
+Function fnGetStyles() As String()
+Dim para As Paragraph, strStyle As String
+Dim arStyles() As String
+
+    With ActiveDocument
+        For Each para In .Paragraphs
+            If (VBA.InStr(strStyle, para.Style) = 0) Then
+                strStyle = strStyle & para.Style & ","
+            End If
+        Next para
+    End With
+    
+    strStyle = VBA.Left(strStyle, VBA.Len(strStyle) - 1)
+    
+    arStyles = VBA.Split(strStyle, ",")
+        
+    fnGetStyles = arStyles
+    
+End Function
+
+'Function fnGetApplyStyles() As String()
+'
+'    For i = 0 To objStylesBox.ListCount - 1
+'          If objStylesBox.Selected(i) Then
+'              strApplyStyle = objStylesBox.List(i)
+''          End If
+''      Next i
+'
+'
+'End Function
+'
+
+Function fnShowSelections() As String()
+Dim arItems() As String
+Dim intI As Integer, intNext As Integer
+
+    ReDim arItems(0)
+    
+    With StyleSeparatorForm1
+        With .objStylesBox
+            For intI = 0 To .ListCount - 1
+                If (.Selected(intI)) Then
+                    intNext = fnNextElement(arItems)
+                    arItems(intNext) = .List(intI)
+                End If
+            Next intI
+        End With
+    End With
+    
+    fnShowSelections = arItems
+    
+End Function
+
+Function fnNextElement(arX) As Integer
+
+    If (VBA.IsArray(arX)) Then
+        If (arX(LBound(arX)) = "") Then
+            fnNextElement = 0
+        Else
+            ReDim Preserve arX(UBound(arX) + 1)
+            fnNextElement = UBound(arX)
+        End If
+    End If
+    
+End Function
+
+Sub runNormal()
+
+    InsertionCount = 0
+        
+    AutomaticStyleSeparatorOptions
+    
+    Unload StyleSeparatorForm1
+    
+    'Custom messagebox text per amount of style separators inserted
+    If AutoStyleSeparator.InsertionCount > 1 Then
+        MsgBox AutoStyleSeparator.InsertionCount & " Style Separators Inserted"
+    ElseIf AutoStyleSeparator.InsertionCount = 1 Then
+        MsgBox AutoStyleSeparator.InsertionCount & " Style Separator Inserted"
+    ElseIf AutoStyleSeparator.InsertionCount = 0 Then
+        MsgBox "No Style Separators Inserted"
+    End If
+    
+    End
+    
+End Sub
+
+'Sub runSaveSelected()
+'
+'Dim userResponse As Boolean
+'Dim strDocName As String
+'
+'''put current file name into strDocName variable?
+'
+'On Error Resume Next
+'userResponse = Application.Dialogs(wdDialogFileSaveAs).Show("strDocName")
+'On Error GoTo 0
+'
+'    ''Stop running Macro if Dialog box is cancelled:
+'    If userResponse = False Then
+'        Unload StyleSeparatorForm1
+'
+'    ''Runs normally if file is saved:
+'    Else
+'        runNormal
+'    End If
+'
+'End Sub
+
+Function SaveCopyAs() As Boolean
+    Const lCancelled_c As Long = 0
+    Dim sSaveAsPath As String
+    sSaveAsPath = GetSaveAsPath
+    If (VBA.Len(sSaveAsPath) = 0) Then
+        SaveCopyAs = False
+        Exit Function
+    Else
+        SaveCopyAs = True
+    End If
+    
+    If VBA.LenB(sSaveAsPath) = lCancelled_c Then Exit Function
+     'Save changes to original document
+    ActiveDocument.Save
+     'the next line copies the active document
+    Application.Documents.Add ActiveDocument.FullName
+     'the next line saves the copy to your location and name
+    ActiveDocument.SaveAs sSaveAsPath
+     'next line closes the copy leaving you with the original document
+    ActiveDocument.Close
+
+End Function
+
+Public Function GetSaveAsPath() As String
+    Dim fd As Office.FileDialog
+    Set fd = Word.Application.FileDialog(msoFileDialogSaveAs)
+    fd.InitialFileName = ActiveDocument.FullName
+    If fd.Show Then GetSaveAsPath = fd.SelectedItems(1)
+End Function
