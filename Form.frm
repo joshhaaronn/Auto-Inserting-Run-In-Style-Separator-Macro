@@ -1,34 +1,58 @@
-Private Sub CommandButton1_Click()
+VERSION 5.00
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} StyleSeparatorForm1 
+   Caption         =   "Select Heading Levels"
+   ClientHeight    =   3945
+   ClientLeft      =   120
+   ClientTop       =   465
+   ClientWidth     =   2985
+   OleObjectBlob   =   "StyleSeparatorForm1.frx":0000
+   StartUpPosition =   1  'CenterOwner
+End
+Attribute VB_Name = "StyleSeparatorForm1"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
 
-Call AutomaticStyleSeparatorOptions
+
+
+Option Explicit
+
+
+Private Sub btnApply_Click()
+     
+    Me.Hide
     
-    Unload StyleSeparatorForm1
+    If Me.chkSaveAs Then
+        'Nested If below unloads if "Save As" dialog box is cancelled
+        If SaveCopyAs Then
+            runNormal
+        
+        Else
+            Unload Me
+            End
+        
+        End If
     
-    If AutoStyleSeparator.InsertionCount > 1 Then
-        MsgBox AutoStyleSeparator.InsertionCount & " Style Separators Inserted"
-    ElseIf AutoStyleSeparator.InsertionCount = 1 Then
-        MsgBox AutoStyleSeparator.InsertionCount & " Style Separator Inserted"
-    ElseIf AutoStyleSeparator.InsertionCount = 0 Then
-        MsgBox "No Style Separators Inserted"
+    Else
+        runNormal
     End If
     
-AutoStyleSeparator.InsertionCount = 0
-    
+   
 End Sub
 
 Private Sub closeButton_Click()
-Unload StyleSeparatorForm1
+    Unload StyleSeparatorForm1
 End Sub
 
-
 Sub sbPositionForm()
-' position form in middle of Oulook window
+' position form in middle of window
 Dim lngLeft As LongPtr, lngTop As LongPtr
 Dim lngWidth As LongPtr, lngHeight As LongPtr
 Dim lngFrmWidth As LongPtr, lngFrmHeight As LongPtr
 
-    ' grab Outlook main window stuff
-    With Outlook.Application.ActiveExplorer
+    ' grab main window stuff
+    With ActiveDocument.Windows(1)
         lngLeft = .Left
         lngTop = .Top
         lngWidth = .Width
@@ -47,3 +71,38 @@ Dim lngFrmWidth As LongPtr, lngFrmHeight As LongPtr
     Me.Move lngLeft, lngTop
 
 End Sub
+
+Private Sub objStylesBox_Change()
+
+    Me.btnApply.Enabled = fnEnableDisableApply
+    
+End Sub
+
+Function fnEnableDisableApply() As Boolean
+Dim intI As Integer
+
+    fnEnableDisableApply = False
+    
+    With Me.objStylesBox
+        For intI = 0 To .ListCount - 1
+            If (.Selected(intI)) Then
+                fnEnableDisableApply = True
+                Exit Function
+            End If
+        Next intI
+    End With
+
+End Function
+
+Private Sub UserForm_Initialize()
+Dim intI As Integer, arStyles() As String
+
+    arStyles = fnGetStyles
+    
+    For intI = LBound(arStyles) To UBound(arStyles)
+        objStylesBox.AddItem arStyles(intI)
+    Next intI
+
+End Sub
+
+
