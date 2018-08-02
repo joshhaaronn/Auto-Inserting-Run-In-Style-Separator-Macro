@@ -19,11 +19,7 @@ Dim arValues() As String
     
     For intI = LBound(arValues) To UBound(arValues)
         RunHeadingAutoStyleSep arValues(intI)
-    Next intI
-
- 
-
-    
+    Next intI    
 End Sub
 
 
@@ -70,20 +66,20 @@ Dim rgNew As Range
     
     rgNew.Move wdParagraph, 1
     rgNew.Select
-    
+   
+   'The style applied to rgNew.Style should typically be the default paragraph style of the operators choosing. 
+   'The else statement that assigns rgNew.Style to wdStyleBodyText allows it to be run in nearly any word document 
     If StyleExists = True Then
         rgNew.Style = ActiveDocument.Styles("BodyText 1")
     Else
         rgNew.Style = ActiveDocument.Styles(wdStyleBodyText)
     End If
-    
-    
+                    
     rgSel.Select
     Selection.InsertStyleSeparator
     
     rgSel.Collapse wdCollapseEnd
-    rgSel.Delete
-            
+    rgSel.Delete         
 End Sub
 
 
@@ -95,8 +91,6 @@ Function StyleExists() As Boolean
     If Err.Number <> 0 Then StyleExists = False
     Err.Clear
 End Function
-
-
 
 Function fnGetStyles() As String()
 Dim para As Paragraph, strStyle As String
@@ -117,18 +111,6 @@ Dim arStyles() As String
     fnGetStyles = arStyles
     
 End Function
-
-'Function fnGetApplyStyles() As String()
-'
-'    For i = 0 To objStylesBox.ListCount - 1
-'          If objStylesBox.Selected(i) Then
-'              strApplyStyle = objStylesBox.List(i)
-''          End If
-''      Next i
-'
-'
-'End Function
-'
 
 Function fnShowSelections() As String()
 Dim arItems() As String
@@ -184,28 +166,6 @@ Sub runNormal()
     End
     
 End Sub
-
-'Sub runSaveSelected()
-'
-'Dim userResponse As Boolean
-'Dim strDocName As String
-'
-'''put current file name into strDocName variable?
-'
-'On Error Resume Next
-'userResponse = Application.Dialogs(wdDialogFileSaveAs).Show("strDocName")
-'On Error GoTo 0
-'
-'    ''Stop running Macro if Dialog box is cancelled:
-'    If userResponse = False Then
-'        Unload StyleSeparatorForm1
-'
-'    ''Runs normally if file is saved:
-'    Else
-'        runNormal
-'    End If
-'
-'End Sub
 
 Function SaveCopyAs() As Boolean
     Const lCancelled_c As Long = 0
