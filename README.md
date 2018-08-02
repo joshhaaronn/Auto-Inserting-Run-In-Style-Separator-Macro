@@ -8,6 +8,6 @@ In the legal industry, it is common practice to have to use "style separators" t
 
 >...and so on
 
-Typically these have to be manually inserted by a word processor, which can easily take hours in agreements exceeding 100 pages. This macro will automatically insert MS Word's default style separator before the first period of a specified paragraph style. This is done through a custom form, which displays all active styles used in the document, that pops up when the macro is called. 
+Typically these have to be manually inserted by a word processor, which can easily take hours in agreements exceeding 100 pages. This macro will automatically insert MS Word's default style separator before the first period of a specified paragraph style. This allows MS Word to differentiate the first sentence of the paragraph as the title, allowing one to use MS Word's Table of Contents feature. This is done through a custom form, which displays all active styles used in the document, that pops up when the macro is called. 
 
 I hope to upload a video demonstration of this soon as this might be unclear to those not familiar with the practice of using style separators. 
